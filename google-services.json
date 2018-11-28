@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "51001829851",
+    "firebase_url": "https://findme-697f9.firebaseio.com",
+    "project_id": "findme-697f9",
+    "storage_bucket": "findme-697f9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:51001829851:android:5ca4bcc9774f810e",
+        "android_client_info": {
+          "package_name": "com.example.potap.findme"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "51001829851-g8ap1ee0m7eksbs427sdtg7puletrqm3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.potap.findme",
+            "certificate_hash": "aebc8862cfc3fbc5344837c31afe414b0463ca26"
+          }
+        },
+        {
+          "client_id": "51001829851-c118d4udp6psjq7ke7fhs7hfmh0da1oj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAONxq2z5OsCOlBmrl7Lt0F11UWInQf1KY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "51001829851-c118d4udp6psjq7ke7fhs7hfmh0da1oj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
