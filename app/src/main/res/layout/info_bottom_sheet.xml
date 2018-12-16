@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/info_bottom_sheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:visibility="invisible"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="?android:attr/actionBarSize"
+    app:scrimVisibleHeightTrigger="100dp"
+    >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="@string/info"
+        android:gravity="center_vertical"/>
+
+    <LinearLayout
+        android:id="@+id/name_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+    <ImageView
+        android:src="@drawable/ic_location"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        />
+
+       <TextView
+           android:id="@+id/info_name_text_view"
+           android:layout_height="wrap_content"
+           android:layout_width="wrap_content"
+           android:textSize="18sp"
+           android:textColor="@color/black"
+           android:layout_marginLeft="32dp"
+           android:layout_marginStart="32dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/address_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_place"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/info_address_text_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/phone_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_phone"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/info_phone_text_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/website_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_web"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/info_website_text_view"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+
+
+</LinearLayout>
