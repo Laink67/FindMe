@@ -28,6 +28,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.potap.findme.NewEventDialog;
 import com.example.potap.findme.R;
 import com.example.potap.findme.adapters.PlaceAutocompleteAdapter;
 import com.example.potap.findme.model.PlaceInfo;
@@ -74,6 +75,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     private GeoDataClient mGeoDataClient;
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
+    private Geocoder geocoder;
 
     private AutoCompleteTextView editTextSearch;
     private ImageButton buttonSearch;
@@ -111,6 +113,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         buttonMenuLeft = findViewById(R.id.bt_menu_left);
         drawerLayout = findViewById(R.id.drawer_layout);
 
+        geocoder = new Geocoder(MapActivity.this);
 
         openBottomFloatingButton.hide();
 
@@ -212,7 +215,6 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
         String searchStr = editTextSearch.getText().toString();
 
-        Geocoder geocoder = new Geocoder(MapActivity.this);
         List<Address> list = new ArrayList<>();
         try {
             list = geocoder.getFromLocationName(searchStr, 1);
@@ -315,17 +317,21 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                         init();
                     }
 
-                    mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-                        @Override
-                        public void onMapClick(LatLng latLng) {
-                            MarkerOptions options = new MarkerOptions().position(latLng).title("");
-                            mMap.addMarker(options);
-                        }
-                    });
+                    addNewEvent();
                 }
             });
 
         }
+    }
+
+    private void addNewEvent(){
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                NewEventDialog dialog = new NewEventDialog(mMap,latLng,geocoder);
+                dialog.show(getSupportFragmentManager(),"NewEventDialog");
+            }
+        });
     }
 
     private void getLocationPermission() {

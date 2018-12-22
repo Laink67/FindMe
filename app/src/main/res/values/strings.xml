@@ -12,4 +12,9 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="str_change_account">Change account</string>
+    <string name="title_of_event">Title of event</string>
+    <string name="description_of_event">Description of event</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="Ok">OK</string>
 </resources>
