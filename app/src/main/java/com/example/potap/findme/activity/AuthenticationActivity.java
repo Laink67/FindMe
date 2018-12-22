@@ -13,6 +13,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.potap.findme.R;
+import com.example.potap.findme.firebase.DataManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,13 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.potap.findme.util.Constants.ERROR_DIALOG_REQUEST;
 
@@ -31,7 +39,8 @@ public class AuthenticationActivity extends AppCompatActivity {
     private ImageButton registrationButton;
     private ProgressBar progressBar;
 
-    private FirebaseAuth mAuth;
+    private DatabaseReference usersReference;
+    private FirebaseAuth firebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
 
     private EditText emailText;
@@ -42,7 +51,8 @@ public class AuthenticationActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_authentication);
 
-        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = DataManager.getInstance().getFirebaseAuth();
+        usersReference = DataManager.getInstance().getUsersReference();
 
         loginButton = findViewById(R.id.bt_login);
         progressBar = findViewById(R.id.progress_bar);
@@ -101,12 +111,27 @@ public class AuthenticationActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+//        FirebaseUser currentUser = mAuth.getCurrentUser();
         //       updateUI(currentUser);
+
+//        String str = mUsersRef.child("name").toString();
+
+        usersReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+//                String text = dataSnapshot.getValue(String.class);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     private void signing(final String email, final String password) {
-        mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+        firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
@@ -122,17 +147,23 @@ public class AuthenticationActivity extends AppCompatActivity {
         });
     }
 
-    private void registration(String email, String password) {
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+    private void registration(final String email, String password) {
+        firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()) {
+
+                    Map user = new HashMap();
+                    user.put("email", email);
+                    usersReference.child(firebaseAuth.getCurrentUser().getUid()).setValue(user);
+
                     Toast.makeText(
                             AuthenticationActivity.this,
                             "Registration is successful",
                             Toast.LENGTH_SHORT).show();
-                else
+                } else {
                     Toast.makeText(AuthenticationActivity.this, "Registration failed", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

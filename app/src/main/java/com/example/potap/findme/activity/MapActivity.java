@@ -12,8 +12,10 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -46,7 +48,6 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -84,6 +85,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     private TextView phoneInfoTextView;
     private TextView websiteInfoTextView;
     private FloatingActionButton openBottomFloatingButton;
+    private DrawerLayout drawerLayout;
+    private ImageButton buttonMenuLeft;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -94,6 +97,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         editTextSearch = findViewById(R.id.edit_text_search);
         buttonSearch = findViewById(R.id.ic_search_bt);
         mGps = findViewById(R.id.ic_gps);
@@ -104,6 +108,9 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         phoneInfoTextView = findViewById(R.id.info_phone_text_view);
         websiteInfoTextView = findViewById(R.id.info_website_text_view);
         openBottomFloatingButton = findViewById(R.id.fl_button_open_bottom);
+        buttonMenuLeft = findViewById(R.id.bt_menu_left);
+        drawerLayout = findViewById(R.id.drawer_layout);
+
 
         openBottomFloatingButton.hide();
 
@@ -145,6 +152,14 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
             }
         });
+
+        buttonMenuLeft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(Gravity.START);
+            }
+        });
+
     }
 
     private void init() {
@@ -265,7 +280,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
         if (!title.equals("My location")) {
             MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-            Marker marker = mMap.addMarker(options);
+            mMap.addMarker(options);
         }
 
         setPlaceInfo(mPlace);
@@ -290,7 +305,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                         getDeviceLocation();
 
                         if (ActivityCompat.checkSelfPermission(MapActivity.this,
-                                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(MapActivity.this,
+                                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                                ActivityCompat.checkSelfPermission(MapActivity.this,
                                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
@@ -298,8 +314,17 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
                         init();
                     }
+
+                    mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                        @Override
+                        public void onMapClick(LatLng latLng) {
+                            MarkerOptions options = new MarkerOptions().position(latLng).title("");
+                            mMap.addMarker(options);
+                        }
+                    });
                 }
             });
+
         }
     }
 

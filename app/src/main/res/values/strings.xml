@@ -8,4 +8,8 @@
     <string name="google_maps_api_key">AIzaSyAIX0SPzgOM-jaIWO_7UyffIezE-p2nzy0</string>
     <string name="enter_event">Enter event</string>
     <string name="info">Info</string>
+    <string name="add_event">Add event</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="str_change_account">Change account</string>
 </resources>
