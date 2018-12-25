@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.example.potap.findme.firebase.DataManager;
+import com.example.potap.findme.model.Event;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -24,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 
 import java.io.IOException;
 import java.util.List;
+
+import static com.example.potap.findme.activity.MapActivity.events;
 
 @SuppressLint("ValidFragment")
 public class NewEventDialog extends DialogFragment {
@@ -71,7 +74,8 @@ public class NewEventDialog extends DialogFragment {
             public void onClick(View v) {
                 String title = titleText.getText().toString();
                 String description = descriptionText.getText().toString();
-                DatabaseReference eventRef = eventsReference.child(title);
+                int id = events.isEmpty()? 1: events.size()+1;
+                DatabaseReference eventRef = eventsReference.child(Integer.toString(id));
 
                 Log.d(TAG, "onClick: save new event");
 
@@ -86,13 +90,23 @@ public class NewEventDialog extends DialogFragment {
                         e.printStackTrace();
                     }
 
-                    eventRef.child("description").setValue(description);
-                    eventRef.child("latlng").setValue(latLng);
-                    eventRef.child("address").setValue(address.get(0).getAddressLine(0));
-                    eventRef.child("usersCount").setValue(1);
+                    String addStr = address.get(0).getAddressLine(0);
+                    Event event = new Event(
+                            id,
+                            title,
+                            description,
+                            latLng,
+                            addStr,
+                            1,
+                            DataManager.getInstance().getFirebaseAuth().getUid());
+
+                     eventRef.setValue(event);
+
+                    events.add(event);
 
                     MarkerOptions options = new MarkerOptions().position(latLng).title(title);
                     map.addMarker(options);
+
 
                     getDialog().dismiss();
                 }

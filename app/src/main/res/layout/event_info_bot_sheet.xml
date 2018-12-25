@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/info_event"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:visibility="invisible"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="?android:attr/actionBarSize"
+    app:scrimVisibleHeightTrigger="100dp"
+    >
+<RelativeLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <TextView
+        android:id="@+id/info_text"
+        android:layout_width="wrap_content"
+        android:layout_height="56dp"
+        android:textSize="18sp"
+        android:textColor="@color/black"
+        android:text="@string/info"
+        android:gravity="center_vertical"/>
+
+    <ImageButton
+        android:id="@+id/bt_delete_event"
+        android:layout_height="26dp"
+        android:layout_width="26dp"
+        android:layout_toRightOf="@id/info_text"
+        android:layout_toEndOf="@id/info_text"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="230dp"
+        android:layout_marginStart="230dp"
+        android:src="@drawable/ic_delete"
+        android:visibility="invisible"/>
+
+</RelativeLayout>
+    <LinearLayout
+        android:id="@+id/event_title_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_location"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/event_title"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/event_address_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_place"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/event_address"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/evetn_description_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_web"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/event_description"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/users_count_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/user"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/event_users_count"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/users_count"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/signature_layout"
+        android:background="?attr/selectableItemBackground"
+        android:focusable="true"
+        android:clickable="true"
+        android:layout_height="48dp"
+        android:layout_gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:src="@drawable/ic_add"
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            />
+
+        <TextView
+            android:id="@+id/event_signature_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/subscribe"
+            android:textSize="18sp"
+            android:textColor="@color/black"
+            android:layout_marginLeft="32dp"
+            android:layout_marginStart="32dp" />
+    </LinearLayout>
+
+
+</LinearLayout>

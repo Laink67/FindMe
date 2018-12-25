@@ -31,6 +31,8 @@ import android.widget.Toast;
 import com.example.potap.findme.NewEventDialog;
 import com.example.potap.findme.R;
 import com.example.potap.findme.adapters.PlaceAutocompleteAdapter;
+import com.example.potap.findme.firebase.DataManager;
+import com.example.potap.findme.model.Event;
 import com.example.potap.findme.model.PlaceInfo;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -49,13 +51,18 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static com.example.potap.findme.util.Constants.DEFAULT_ZOOM;
 import static com.example.potap.findme.util.Constants.LOCATION_PERMISSION_REQUEST_CODE;
@@ -67,7 +74,6 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     private static final String COARSE_LOCATION = Manifest.permission.ACCESS_FINE_LOCATION;
     private static final LatLngBounds LAT_LNG_BOUNDS = new LatLngBounds(new LatLng(-40, -168), new LatLng(71, 136));
 
-
     private boolean mLocationPermissionGranted = false;
     private GoogleMap mMap;
     private FusedLocationProviderClient mFusedLocationProviderClient;
@@ -76,12 +82,18 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     private GoogleApiClient mGoogleApiClient;
     private PlaceInfo mPlace;
     private Geocoder geocoder;
-
+    private ImageButton buttonDeleteEvent;
+    private TextView eventTitle;
+    private TextView eventAddress;
+    private TextView eventDescription;
+    private TextView eventUsersCount;
     private AutoCompleteTextView editTextSearch;
     private ImageButton buttonSearch;
     private ImageView mGps;
     private LinearLayout bottomSheet;
     private BottomSheetBehavior bottomSheetBehavior;
+    private LinearLayout infoEvent;
+    private BottomSheetBehavior infoEventBehavior;
     private TextView nameInfoTextView;
     private TextView addressInfoTextView;
     private TextView phoneInfoTextView;
@@ -89,6 +101,9 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     private FloatingActionButton openBottomFloatingButton;
     private DrawerLayout drawerLayout;
     private ImageButton buttonMenuLeft;
+
+    public static ArrayList<Event> events = new ArrayList<>();
+    private ArrayList<Marker> markers;
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -100,11 +115,24 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        markers = new ArrayList<>();
+
         editTextSearch = findViewById(R.id.edit_text_search);
         buttonSearch = findViewById(R.id.ic_search_bt);
         mGps = findViewById(R.id.ic_gps);
+
+        //Bottom Sheets
         bottomSheet = findViewById(R.id.info_bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+        infoEvent = findViewById(R.id.info_event);
+        infoEventBehavior = BottomSheetBehavior.from(infoEvent);
+        //
+
+        buttonDeleteEvent = findViewById(R.id.bt_delete_event);
+        eventUsersCount = findViewById(R.id.event_users_count);
+        eventTitle = findViewById(R.id.event_title);
+        eventAddress = findViewById(R.id.event_address);
+        eventDescription = findViewById(R.id.event_description);
         nameInfoTextView = findViewById(R.id.info_name_text_view);
         addressInfoTextView = findViewById(R.id.info_address_text_view);
         phoneInfoTextView = findViewById(R.id.info_phone_text_view);
@@ -118,6 +146,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         openBottomFloatingButton.hide();
 
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+        infoEventBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         getLocationPermission();
 
@@ -133,18 +162,17 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         openBottomFloatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                else
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+/*
+                showBottomSheet(bottomSheetBehavior);
+*/
+                showBottomSheet(infoEventBehavior);
             }
         });
-
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
-                if(i == BottomSheetBehavior.STATE_HIDDEN)
+                if (i == BottomSheetBehavior.STATE_HIDDEN)
                     openBottomFloatingButton.show();
                 else
                     openBottomFloatingButton.hide();
@@ -163,6 +191,82 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         });
 
+        DataManager.getInstance().getEventsReference().addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (events.isEmpty()) {
+                    for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                        Map record = (Map) ds.getValue();
+                        addEvent(record, Integer.parseInt(ds.getKey()));
+                    }
+                }
+                updateEvents(events, dataSnapshot);
+                fillMap(events);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        buttonDeleteEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for (int i = 0; i < events.size(); i++) {
+                    if (events.get(i).getDescription().equals(eventDescription.getText()) &&
+                            events.get(i).getTitle().equals(eventTitle.getText())) {
+                        DataManager.getInstance().getEventsReference().child(String.valueOf(events.get(i).getId())).removeValue();
+                        mMap.clear();
+                        showBottomSheet(infoEventBehavior);
+                        events.remove(i);
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void showBottomSheet(BottomSheetBehavior behavior) {
+        if (behavior.getState() == BottomSheetBehavior.STATE_HIDDEN)
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        else
+            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    private void addEvent(Map record, int id) {
+        events.add(new Event(
+                id,
+                record.get("title").toString(),
+                record.get("description").toString(),
+                (Map) record.get("position"),
+                record.get("address").toString(),
+                Integer.parseInt(record.get("usersCount").toString()),
+                record.get("userId").toString()));
+    }
+
+    private void updateEvents(ArrayList<Event> events, DataSnapshot dataSnapshot) {
+        long dsCount = dataSnapshot.getChildrenCount();
+        long difference = dsCount - events.size();
+        if (difference > 0) {
+/*
+            for (int i = events.size(); i < dsCount; i++) {
+*/
+            Map fgp = (Map) dataSnapshot.child(String.valueOf(dsCount)).getValue();
+            if (fgp != null)
+                addEvent(fgp, (int) dsCount);
+        } else if (difference < 0) {
+            for (int i = (int) dsCount - 1; i < difference; i++) {
+                events.remove(i);//Удаление событий из списка
+            }
+        }
+    }
+//    }
+
+    private void fillMap(ArrayList<Event> events) {
+        if (!events.isEmpty())
+            for (Event event : events)
+                addOptionsAndMarker(event.getPosition(), event.getTitle());
     }
 
     private void init() {
@@ -237,11 +341,22 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         if (mPlace != null && bottomSheet.getVisibility() == View.INVISIBLE)
             bottomSheet.setVisibility(View.VISIBLE);
 
-        if(mPlace != null){
+        if (mPlace != null) {
             nameInfoTextView.setText(placeInfo.getName());
             addressInfoTextView.setText(placeInfo.getAddress());
-//            phoneInfoTextView.setText(placeInfo.getPhoneNumber());
-//            websiteInfoTextView.setText(placeInfo.getWebsiteUri().toString());
+        }
+    }
+
+    private void setEventInfo(Event event) {
+        if (!eventTitle.getText().equals(event.getTitle()) && !eventDescription.getText().equals(event.getDescription())) {
+            eventTitle.setText(event.getTitle());
+            eventAddress.setText(event.getAddress());
+            eventDescription.setText(event.getDescription());
+            eventUsersCount.setText("Users count: " + Integer.toString(event.getUsersCount()));
+            String key = DataManager.getInstance().getFirebaseAuth().getUid();
+            String Ekey = event.getUserId();
+            if (key != null && key.equals(Ekey))
+                buttonDeleteEvent.setVisibility(View.VISIBLE);
         }
     }
 
@@ -275,14 +390,17 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         }
     }
 
+    private void addOptionsAndMarker(LatLng latLng, String title) {
+        markers.add(mMap.addMarker(new MarkerOptions().position(latLng).title(title)));
+    }
+
     private void moveCamera(LatLng latLng, float zoom, String title) {
         Log.d(TAG, "move the camera to: lat: " + latLng.latitude + ", lng: " + latLng.longitude);
 
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, zoom));
 
         if (!title.equals("My location")) {
-            MarkerOptions options = new MarkerOptions().position(latLng).title(title);
-            mMap.addMarker(options);
+            addOptionsAndMarker(latLng, title);
         }
 
         setPlaceInfo(mPlace);
@@ -309,13 +427,43 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                         if (ActivityCompat.checkSelfPermission(MapActivity.this,
                                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                                 ActivityCompat.checkSelfPermission(MapActivity.this,
-                                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                             return;
                         }
                         mMap.setMyLocationEnabled(true);
 
                         init();
                     }
+
+                    mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                        @Override
+                        public boolean onMarkerClick(Marker marker) {
+                            for (int i = 0; i < events.size(); i++) {
+                                if (events.get(i).getTitle().equals(marker.getTitle())) {
+                                    setEventInfo(events.get(i));
+                                    break;
+                                }
+                            }
+                            showBottomSheet(infoEventBehavior);
+                            infoEvent.setVisibility(View.VISIBLE);
+                            return true;
+                        }
+                    });
+
+                    infoEventBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                        @Override
+                        public void onStateChanged(@NonNull View view, int i) {
+                            if (i == infoEventBehavior.STATE_HIDDEN)
+                                openBottomFloatingButton.show();
+                            else
+                                openBottomFloatingButton.hide();
+                        }
+
+                        @Override
+                        public void onSlide(@NonNull View view, float v) {
+
+                        }
+                    });
 
                     addNewEvent();
                 }
@@ -324,12 +472,12 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         }
     }
 
-    private void addNewEvent(){
+    private void addNewEvent() {
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
             public void onMapClick(LatLng latLng) {
-                NewEventDialog dialog = new NewEventDialog(mMap,latLng,geocoder);
-                dialog.show(getSupportFragmentManager(),"NewEventDialog");
+                NewEventDialog dialog = new NewEventDialog(mMap, latLng, geocoder);
+                dialog.show(getSupportFragmentManager(), "NewEventDialog");
             }
         });
     }

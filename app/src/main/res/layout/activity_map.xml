@@ -91,6 +91,7 @@
             app:layout_anchor="@id/map"
             app:layout_anchorGravity="bottom|center" />
 
+        <include layout="@layout/event_info_bot_sheet" />
         <include layout="@layout/info_bottom_sheet" />
 
     </android.support.design.widget.CoordinatorLayout>

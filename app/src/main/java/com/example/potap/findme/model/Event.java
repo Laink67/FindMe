@@ -1,19 +1,48 @@
 package com.example.potap.findme.model;
 
-import android.location.Address;
-
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.Map;
+
 public class Event {
+
+    private int id;
+
+    private String title;
 
     private String description;
 
     private LatLng position;
 
-    private Address address;
+    private String address;
 
+    private String userId;
 
     private int usersCount;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
     public String getDescription() {
         return description;
@@ -31,11 +60,11 @@ public class Event {
         this.position = position;
     }
 
-    public Address getAddress() {
+    public String getAddress() {
         return address;
     }
 
-    public void setAddress(Address address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -47,12 +76,23 @@ public class Event {
         this.usersCount = usersCount;
     }
 
-    public Event(String description, LatLng position, Address address, int usersCount) {
+    public Event(int id, String title, String description, Map position, String address, int usersCount,String userId) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.position = new LatLng((double) position.get("latitude"),(double) position.get("longitude"));
+        this.address = address;
+        this.usersCount = usersCount;
+        this.userId = userId;
+    }
+
+    public Event(int id, String title, String description, LatLng position, String address, int usersCount,String userId) {
+        this.id = id;
+        this.title = title;
         this.description = description;
         this.position = position;
         this.address = address;
         this.usersCount = usersCount;
+        this.userId = userId;
     }
-
-
 }
