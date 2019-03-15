@@ -35,7 +35,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginLeft="230dp"
         android:layout_marginStart="230dp"
-        android:src="@drawable/ic_delete"
+        app:srcCompat="@drawable/ic_delete"
         android:visibility="invisible"/>
 
 </RelativeLayout>
@@ -50,7 +50,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_location"
+            app:srcCompat="@drawable/ic_location"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
@@ -75,7 +75,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_place"
+            app:srcCompat="@drawable/ic_place"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
@@ -101,7 +101,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_web"
+            app:srcCompat="@drawable/ic_web"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
@@ -126,7 +126,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/user"
+            app:srcCompat="@drawable/ic_users"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
@@ -153,7 +153,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_add"
+            app:srcCompat="@drawable/ic_add"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />

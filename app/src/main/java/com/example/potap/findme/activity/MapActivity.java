@@ -122,8 +122,10 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
         mGps = findViewById(R.id.ic_gps);
 
         //Bottom Sheets
+/*
         bottomSheet = findViewById(R.id.info_bottom_sheet);
         bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet);
+*/
         infoEvent = findViewById(R.id.info_event);
         infoEventBehavior = BottomSheetBehavior.from(infoEvent);
         //
@@ -145,7 +147,9 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
         openBottomFloatingButton.hide();
 
+/*
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+*/
         infoEventBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
         getLocationPermission();
@@ -169,6 +173,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
             }
         });
 
+/*
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View view, int i) {
@@ -183,6 +188,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
 
             }
         });
+*/
 
         buttonMenuLeft.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -217,9 +223,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                     if (events.get(i).getDescription().equals(eventDescription.getText()) &&
                             events.get(i).getTitle().equals(eventTitle.getText())) {
                         DataManager.getInstance().getEventsReference().child(String.valueOf(events.get(i).getId())).removeValue();
-                        mMap.clear();
-                        showBottomSheet(infoEventBehavior);
-                        events.remove(i);
+//                        events.remove(i);
                     }
                 }
             }
@@ -256,12 +260,13 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
             if (fgp != null)
                 addEvent(fgp, (int) dsCount);
         } else if (difference < 0) {
-            for (int i = (int) dsCount - 1; i < difference; i++) {
-                events.remove(i);//Удаление событий из списка
+            for (int i = (int)dsCount; i < events.size(); i++) {////////
+                events.remove(i);                       //Удаление событий из списка
+                mMap.clear();
+                showBottomSheet(infoEventBehavior);///////
             }
         }
     }
-//    }
 
     private void fillMap(ArrayList<Event> events) {
         if (!events.isEmpty())
@@ -338,8 +343,8 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
     }
 
     private void setPlaceInfo(PlaceInfo placeInfo) {
-        if (mPlace != null && bottomSheet.getVisibility() == View.INVISIBLE)
-            bottomSheet.setVisibility(View.VISIBLE);
+        if (mPlace != null && infoEvent.getVisibility() == View.INVISIBLE)
+            infoEvent.setVisibility(View.VISIBLE);
 
         if (mPlace != null) {
             nameInfoTextView.setText(placeInfo.getName());
@@ -375,9 +380,19 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                             Log.d(TAG, "onComplete: found location!");
 
                             Location currentLocation = (Location) task.getResult();
-                            moveCamera(new LatLng(currentLocation.getLatitude(),
-                                            currentLocation.getLongitude()),
-                                    DEFAULT_ZOOM, "My location");
+                            if (currentLocation != null) {
+                                moveCamera(new LatLng(currentLocation.getLatitude(),
+                                                currentLocation.getLongitude()),
+                                        DEFAULT_ZOOM, "My location");
+                            }
+                            else {
+                                currentLocation = new Location("");//provider name is unnecessary   ///Костыль  Костыль Костыль   Костыль
+                                currentLocation.setLatitude(54.7845032);//your coords of course                 ///Костыль  Костыль Костыль   Костыль
+                                currentLocation.setLongitude(32.0452469);                                   ///Костыль  Костыль Костыль   Костыль
+                                moveCamera(new LatLng(currentLocation.getLatitude(),                       ///Костыль  Костыль Костыль   Костыль
+                                                currentLocation.getLongitude()),                        ///Костыль  Костыль Костыль   Костыль
+                                        DEFAULT_ZOOM, "My location");
+                            }
                         } else {
                             Log.d(TAG, "onComplete: found location!");
                             Toast.makeText(MapActivity.this, "unable to get current", Toast.LENGTH_SHORT).show();
@@ -444,7 +459,7 @@ public class MapActivity extends AppCompatActivity implements GoogleApiClient.On
                                     break;
                                 }
                             }
-                            showBottomSheet(infoEventBehavior);
+                            showBottomSheet(infoEventBehavior); //////
                             infoEvent.setVisibility(View.VISIBLE);
                             return true;
                         }

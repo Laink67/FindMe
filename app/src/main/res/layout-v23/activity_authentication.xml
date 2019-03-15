@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="#5fc9bd"
     android:layout_width="match_parent"
@@ -44,7 +45,7 @@
                     android:id="@+id/email_edit_text"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:drawableStart="@drawable/user"
+                    android:drawableStart="@drawable/ic_users"
                     android:drawableTint="#FF4081"
                     android:singleLine="true"
                     android:hint="@string/user_name"
@@ -101,7 +102,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/user_profile_image_background"
         android:elevation="4dp"
-        android:src="@drawable/profile_icon" />
+        app:srcCompat="@drawable/profile_icon" />
 
     <ProgressBar
         android:id="@+id/progress_bar"

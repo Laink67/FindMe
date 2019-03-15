@@ -34,7 +34,7 @@
         android:orientation="horizontal">
 
     <ImageView
-        android:src="@drawable/ic_location"
+        app:srcCompat="@drawable/ic_location"
         android:layout_width="26dp"
         android:layout_height="26dp"
         />
@@ -59,7 +59,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_place"
+            app:srcCompat="@drawable/ic_place"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
@@ -84,7 +84,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_phone"
+            app:srcCompat="@drawable/ic_phone"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
@@ -110,7 +110,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:src="@drawable/ic_web"
+            app:srcCompat="@drawable/ic_web"
             android:layout_width="26dp"
             android:layout_height="26dp"
             />
