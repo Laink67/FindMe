@@ -5,4 +5,18 @@
     <string name="sign_in">Sign in</string>
     <string name="password">Password</string>
     <string name="user_name">User Name</string>
+    <string name="google_maps_api_key">AIzaSyAIX0SPzgOM-jaIWO_7UyffIezE-p2nzy0</string>
+    <string name="enter_event">Enter event</string>
+    <string name="info">Info</string>
+    <string name="add_event">Add event</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="str_change_account">Change account</string>
+    <string name="title_of_event">Title of event</string>
+    <string name="description_of_event">Description of event</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="Ok">OK</string>
+    <string name="users_count">Users count:</string>
+    <string name="subscribe">Subscribe</string>
 </resources>
